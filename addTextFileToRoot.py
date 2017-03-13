@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+
+'''
+Script to convert JSON configuration into ROOT file for DB.
+'''
+
 import ROOT
 import sys
 import argparse
@@ -14,8 +20,8 @@ def _run():
 
     outHandle = ROOT.TFile.Open(args.input_file.rsplit(".",1)[0]+".root","RECREATE")
     for i in args.jet_collection:
-        outHandle.mkdir("DL1/"+i)
-        outHandle.cd("DL1/"+i)
+        outHandle.mkdir(args.name+"/"+i)
+        outHandle.cd(args.name+"/"+i)
         ROOT_str_name = ROOT.TObjString(str(config_str))
         ROOT_str_name.Write("net_configuration")
         outHandle.Write()
@@ -28,6 +34,8 @@ them in your job options later when you want to run Athena."
     parser = argparse.ArgumentParser(description="Showcase the use of argparse on the test case of adding a NN configuration string to a ROOT file for different jet collections.")
     parser.add_argument("input_file", type=str, default="NNconfig.json",
                         help=help_input_file)
+    parser.add_argument("-n", "--name", type=str, default="DL1",
+                        help="DL1 directory name (default: %(default)s)")
     parser.add_argument("-jc", "--jet_collection", type=str, nargs='+',
                         default=["AntiKt4EMTopo", "AntiKt4LCTopo"],
                         help=help_jet_collection)
